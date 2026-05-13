@@ -1,5 +1,6 @@
 package com.unclasprommer.aeronavigation;
 
+import com.unclasprommer.aeronavigation.block.ModBlocks;
 import com.unclasprommer.aeronavigation.item.ModCreativeModeTabs;
 import com.unclasprommer.aeronavigation.item.ModItems;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class CreateAeronauticsNavigation {
         modEventBus.addListener(this::commonSetup);
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (CreateAeronauticsNavigation) to respond directly to events.

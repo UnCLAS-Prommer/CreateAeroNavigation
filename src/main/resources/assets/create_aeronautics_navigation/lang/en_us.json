@@ -1,5 +1,4 @@
 {
-  "item.create_aeronautics_navigation.vor_beacon": "VOR Beacon",
   "create_aeronautics_navigation.configuration.title": "Create: Aeronautics Navigation Configs",
   "create_aeronautics_navigation.configuration.section.create_aeronautics_navigation.common.toml": "Create: Aeronautics Navigation Configs",
   "create_aeronautics_navigation.configuration.section.create_aeronautics_navigation.common.toml.title": "Create: Aeronautics Navigation Configs",
@@ -8,5 +7,7 @@
   "create_aeronautics_navigation.configuration.magicNumberIntroduction": "Magic Number Text",
   "create_aeronautics_navigation.configuration.magicNumber": "Magic Number",
 
-  "itemGoup.navigation_tab": "Aeronautics Navigation"
+  "itemGoup.navigation_tab": "Aeronautics Navigation",
+  "block.create_aeronautics_navigation.vor_beacon": "VOR Beacon",
+  "block.create_aeronautics_navigation.dme_beacon": "DME Beacon"
 }

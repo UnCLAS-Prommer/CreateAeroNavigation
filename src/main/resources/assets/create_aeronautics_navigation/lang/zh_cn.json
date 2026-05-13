@@ -1,5 +1,4 @@
 {
-  "item.create_aeronautics_navigation.vor_beacon": "VOR 导航台",
   "create_aeronautics_navigation.configuration.title": "机械动力：航空学导航 配置",
   "create_aeronautics_navigation.configuration.section.create_aeronautics_navigation.common.toml": "机械动力：航空学导航 配置",
   "create_aeronautics_navigation.configuration.section.create_aeronautics_navigation.common.toml.title": "机械动力：航空学导航 配置",
@@ -8,5 +7,7 @@
   "create_aeronautics_navigation.configuration.magicNumberIntroduction": "Magic Number Text",
   "create_aeronautics_navigation.configuration.magicNumber": "Magic Number",
 
-  "itemGoup.navigation_tab": "航空学导航"
+  "itemGoup.navigation_tab": "航空学导航",
+  "block.create_aeronautics_navigation.vor_beacon": "VOR 导航台",
+  "block.create_aeronautics_navigation.dme_beacon": "DME 导航台"
 }

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "create_aeronautics_navigation:block/vor_beacon"
+    }
+  }
+}
