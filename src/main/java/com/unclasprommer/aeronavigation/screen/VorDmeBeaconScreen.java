@@ -40,9 +40,7 @@ public class VorDmeBeaconScreen extends AbstractContainerScreen<VorDmeBeaconMenu
         );
         this.nameEdit.setMaxLength(VorDmeBeaconBlockEntity.MAX_STATION_NAME_LENGTH);
         this.nameEdit.setValue(this.menu.getStationName());
-        this.nameEdit.setFocused(true);
         this.addRenderableWidget(this.nameEdit);
-        this.setInitialFocus(this.nameEdit);
 
         final int buttonY = this.topPos + 78;
         this.addRenderableWidget(Button.builder(
@@ -57,6 +55,8 @@ public class VorDmeBeaconScreen extends AbstractContainerScreen<VorDmeBeaconMenu
                 )
                 .bounds(this.leftPos + 114, buttonY, 94, 20)
                 .build());
+
+        this.focusNameEdit();
     }
 
     @Override
@@ -97,6 +97,14 @@ public class VorDmeBeaconScreen extends AbstractContainerScreen<VorDmeBeaconMenu
     private void saveAndClose() {
         PacketDistributor.sendToServer(new RenameVorDmeBeaconPacket(this.menu.getPos(), this.nameEdit.getValue()));
         this.closeWithoutSaving();
+    }
+
+    private void focusNameEdit() {
+        this.setInitialFocus(this.nameEdit);
+        this.setFocused(this.nameEdit);
+        this.nameEdit.setFocused(true);
+        this.nameEdit.moveCursorToEnd(false);
+        this.nameEdit.setHighlightPos(0);
     }
 
     private void closeWithoutSaving() {
