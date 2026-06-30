@@ -16,13 +16,6 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(CreateAeronauticsNavigation.MOD_ID);
 
-    // 方块定义
-    public static final DeferredBlock<Block> VOR_BEACON =
-            registerBlocks("vor_beacon", () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(2.0F, 3.0F)));
-    public static final DeferredBlock<Block> DME_BEACON =
-            registerBlocks("dme_beacon", () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(2.0F, 3.0F)));
     public static final DeferredBlock<VorDmeBeaconBlock> VORDME_BEACON =
             registerBlocks("vordme_beacon", () -> new VorDmeBeaconBlock(BlockBehaviour.Properties.of()
                     .strength(2.0F, 3.0F)

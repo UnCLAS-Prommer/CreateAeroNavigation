@@ -2,7 +2,9 @@ package com.unclasprommer.aeronavigation;
 
 import com.unclasprommer.aeronavigation.block.entity.ModBlockEntityTypes;
 import com.unclasprommer.aeronavigation.component.ModDataComponents;
+import com.unclasprommer.aeronavigation.network.ModNetwork;
 import com.unclasprommer.aeronavigation.navigation.ModNavigationTargets;
+import com.unclasprommer.aeronavigation.screen.ModMenuTypes;
 import dev.simulated_team.simulated.index.SimDataComponents;
 import com.unclasprommer.aeronavigation.block.ModBlocks;
 import com.unclasprommer.aeronavigation.item.ModCreativeModeTabs;
@@ -23,6 +25,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -46,7 +49,9 @@ public class CreateAeronauticsNavigation {
         ModBlockEntityTypes.register(modEventBus);
         ModDataComponents.register(modEventBus);
         ModNavigationTargets.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        ModNetwork.register(modEventBus);
         modEventBus.addListener(this::modifyDefaultComponents);
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (CreateAeronauticsNavigation) to respond directly to events.
@@ -89,5 +94,9 @@ public class CreateAeronauticsNavigation {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    public static ResourceLocation path(final String path) {
+        return ResourceLocation.tryBuild(MOD_ID, path);
     }
 }

@@ -35,6 +35,18 @@ public final class RouteData {
         stack.set(ModDataComponents.ROUTE_INDEX.get(), clamped);
     }
 
+    public static int changeRouteIndex(final ItemStack stack, final int delta) {
+        final List<RouteWaypoint> waypoints = getWaypoints(stack);
+        if (waypoints.isEmpty()) {
+            setRouteIndex(stack, 0);
+            return 0;
+        }
+
+        final int index = Math.clamp(getRouteIndex(stack) + delta, 0, waypoints.size() - 1);
+        stack.set(ModDataComponents.ROUTE_INDEX.get(), index);
+        return index;
+    }
+
     public static void addWaypoint(final ItemStack stack, final RouteWaypoint waypoint) {
         final List<RouteWaypoint> waypoints = new ArrayList<>(getWaypoints(stack));
         waypoints.add(waypoint);
@@ -79,7 +91,7 @@ public final class RouteData {
             return null;
         }
 
-        if (navBE.getProjectedSelfPos().distanceTo(target) <= ARRIVAL_RADIUS && index < waypoints.size() - 1) {
+        if (horizontalDistanceToTarget(navBE, target) <= ARRIVAL_RADIUS && index < waypoints.size() - 1) {
             index++;
             setRouteIndex(stack, index);
             target = targetFor(navBE, waypoints.get(index));
@@ -95,7 +107,14 @@ public final class RouteData {
         }
 
         final Vec3 target = targetFor(navBE, waypoints.get(waypoints.size() - 1));
-        return target != null && navBE.getProjectedSelfPos().distanceTo(target) <= ARRIVAL_RADIUS;
+        return target != null && horizontalDistanceToTarget(navBE, target) <= ARRIVAL_RADIUS;
+    }
+
+    private static double horizontalDistanceToTarget(final NavTableBlockEntity navBE, final Vec3 target) {
+        final Vec3 self = navBE.getProjectedSelfPos();
+        final double dx = self.x - target.x;
+        final double dz = self.z - target.z;
+        return Math.sqrt(dx * dx + dz * dz);
     }
 
     @Nullable

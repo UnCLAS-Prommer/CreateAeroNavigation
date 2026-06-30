@@ -21,7 +21,7 @@ public class NavTableBlockMixin {
             final Direction direction,
             final CallbackInfoReturnable<Integer> cir
     ) {
-        if (direction == Direction.UP && NavigationTableRedstone.isRouteComplete(level, pos)) {
+        if (direction == Direction.DOWN && NavigationTableRedstone.isRouteComplete(level, pos)) {
             cir.setReturnValue(15);
         }
     }
@@ -34,7 +34,7 @@ public class NavTableBlockMixin {
             final Direction direction,
             final CallbackInfoReturnable<Integer> cir
     ) {
-        if (direction == Direction.UP && NavigationTableRedstone.isRouteComplete(level, pos)) {
+        if (direction == Direction.DOWN && NavigationTableRedstone.isRouteComplete(level, pos)) {
             cir.setReturnValue(15);
         }
     }

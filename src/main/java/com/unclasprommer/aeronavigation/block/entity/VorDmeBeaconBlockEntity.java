@@ -1,20 +1,30 @@
 package com.unclasprommer.aeronavigation.block.entity;
 
 import com.unclasprommer.aeronavigation.navigation.RouteWaypoint;
+import com.unclasprommer.aeronavigation.screen.VorDmeBeaconMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.UUID;
 
-public class VorDmeBeaconBlockEntity extends BlockEntity {
+public class VorDmeBeaconBlockEntity extends BlockEntity implements MenuProvider {
     private static final String STATION_ID_KEY = "StationId";
     private static final String STATION_NAME_KEY = "StationName";
+    public static final int MAX_STATION_NAME_LENGTH = 64;
 
     private UUID stationId;
     private String stationName = "";
@@ -43,9 +53,40 @@ public class VorDmeBeaconBlockEntity extends BlockEntity {
         return this.stationName;
     }
 
+    public void setStationName(final String stationName) {
+        this.ensureIdentity();
+        final String normalized = normalizeStationName(stationName, this.stationId);
+        if (normalized.equals(this.stationName)) {
+            return;
+        }
+
+        this.stationName = normalized;
+        this.setChanged();
+        if (this.level != null) {
+            final BlockState state = this.getBlockState();
+            this.level.sendBlockUpdated(this.worldPosition, state, state, 3);
+        }
+    }
+
     public RouteWaypoint createWaypoint(final Level level) {
         this.ensureIdentity();
         return new RouteWaypoint(this.stationName, GlobalPos.of(level.dimension(), this.worldPosition));
+    }
+
+    public void writeMenuData(final RegistryFriendlyByteBuf buffer) {
+        buffer.writeBlockPos(this.worldPosition);
+        buffer.writeUtf(this.getStationName());
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(final int containerId, final Inventory playerInventory, final Player player) {
+        return VorDmeBeaconMenu.create(containerId, playerInventory, this);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("screen.create_aeronautics_navigation.vordme_beacon");
     }
 
     @Override
@@ -65,5 +106,31 @@ public class VorDmeBeaconBlockEntity extends BlockEntity {
         if (tag.contains(STATION_NAME_KEY)) {
             this.stationName = tag.getString(STATION_NAME_KEY);
         }
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
+    }
+
+    public static String normalizeStationName(final String input, final UUID fallbackId) {
+        final String cleaned = input == null ? "" : input.codePoints()
+                .filter(codePoint -> codePoint == ' ' || !Character.isISOControl(codePoint))
+                .limit(MAX_STATION_NAME_LENGTH)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString()
+                .strip();
+
+        if (!cleaned.isBlank()) {
+            return cleaned;
+        }
+
+        return "VORDME-" + fallbackId.toString().substring(0, 8).toUpperCase(Locale.ROOT);
     }
 }

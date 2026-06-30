@@ -22,7 +22,7 @@ public class RouteNavigationTarget implements NavigationTarget {
 
     @Override
     public int getRedstoneStrength(final NavTableBlockEntity navBE, final Direction direction, final ItemStack self) {
-        if (direction == Direction.UP) {
+        if (direction == Direction.DOWN) {
             return RouteData.isFinalWaypointReached(navBE, self) ? 15 : 0;
         }
         return NavigationTarget.super.getRedstoneStrength(navBE, direction, self);

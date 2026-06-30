@@ -6,6 +6,7 @@ import com.unclasprommer.aeronavigation.item.ModItems;
 import com.unclasprommer.aeronavigation.item.RouteCardItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -66,14 +67,23 @@ public class VorDmeBeaconBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof final VorDmeBeaconBlockEntity beacon) {
+                player.displayClientMessage(Component.translatable(
+                        "block.create_aeronautics_navigation.vordme_beacon.status",
+                        beacon.getStationName(),
+                        pos.getX(),
+                        pos.getY(),
+                        pos.getZ()
+                ), true);
+            }
+            return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+        }
+
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof final VorDmeBeaconBlockEntity beacon) {
-            player.displayClientMessage(Component.translatable(
-                    "block.create_aeronautics_navigation.vordme_beacon.status",
-                    beacon.getStationName(),
-                    pos.getX(),
-                    pos.getY(),
-                    pos.getZ()
-            ), true);
+            if (player instanceof final ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(beacon, beacon::writeMenuData);
+            }
         }
         return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
     }

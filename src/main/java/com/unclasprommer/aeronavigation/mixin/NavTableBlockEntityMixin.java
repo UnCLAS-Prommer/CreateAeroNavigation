@@ -36,6 +36,7 @@ public abstract class NavTableBlockEntityMixin extends BlockEntity {
         final BlockState state = this.getBlockState();
         this.level.updateNeighborsAt(this.worldPosition, state.getBlock());
         this.level.updateNeighborsAt(this.worldPosition.above(), state.getBlock());
+        this.level.updateNeighborsAt(this.worldPosition.below(), state.getBlock());
         this.setChanged();
     }
 }
