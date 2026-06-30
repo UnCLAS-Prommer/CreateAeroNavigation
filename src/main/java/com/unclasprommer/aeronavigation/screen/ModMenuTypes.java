@@ -15,6 +15,9 @@ public class ModMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<VorDmeBeaconMenu>> VORDME_BEACON =
             MENU_TYPES.register("vordme_beacon", () -> IMenuTypeExtension.create(VorDmeBeaconMenu::new));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<RouteCardMenu>> ROUTE_CARD =
+            MENU_TYPES.register("route_card", () -> IMenuTypeExtension.create(RouteCardMenu::new));
+
     public static void register(final IEventBus eventBus) {
         MENU_TYPES.register(eventBus);
     }

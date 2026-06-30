@@ -2,11 +2,15 @@ package com.unclasprommer.aeronavigation.navigation;
 
 import com.unclasprommer.aeronavigation.component.ModDataComponents;
 import dev.simulated_team.simulated.content.blocks.nav_table.NavTableBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class RouteData {
@@ -52,6 +56,57 @@ public final class RouteData {
         waypoints.add(waypoint);
         stack.set(ModDataComponents.ROUTE_WAYPOINTS.get(), List.copyOf(waypoints));
         setRouteIndex(stack, Math.min(getRouteIndex(stack), waypoints.size() - 1));
+    }
+
+    public static void addCoordinateWaypoint(final ItemStack stack, final Level level, final BlockPos pos) {
+        addWaypoint(stack, new RouteWaypoint(createCoordinateWaypointName(pos), GlobalPos.of(level.dimension(), pos)));
+    }
+
+    public static String createCoordinateWaypointName(final BlockPos pos) {
+        return "WP " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+    }
+
+    public static boolean moveWaypoint(final ItemStack stack, final int index, final int delta) {
+        final List<RouteWaypoint> waypoints = new ArrayList<>(getWaypoints(stack));
+        if (waypoints.size() < 2 || index < 0 || index >= waypoints.size()) {
+            return false;
+        }
+
+        final int to = Math.clamp(index + delta, 0, waypoints.size() - 1);
+        if (to == index) {
+            return false;
+        }
+
+        final int currentIndex = getRouteIndex(stack);
+        Collections.swap(waypoints, index, to);
+        stack.set(ModDataComponents.ROUTE_WAYPOINTS.get(), List.copyOf(waypoints));
+        if (currentIndex == index) {
+            setRouteIndex(stack, to);
+        } else if (currentIndex == to) {
+            setRouteIndex(stack, index);
+        } else {
+            setRouteIndex(stack, currentIndex);
+        }
+        return true;
+    }
+
+    public static boolean removeWaypointAtIndex(final ItemStack stack, final int index) {
+        final List<RouteWaypoint> waypoints = new ArrayList<>(getWaypoints(stack));
+        if (index < 0 || index >= waypoints.size()) {
+            return false;
+        }
+
+        final int currentIndex = getRouteIndex(stack);
+        waypoints.remove(index);
+        stack.set(ModDataComponents.ROUTE_WAYPOINTS.get(), List.copyOf(waypoints));
+        if (waypoints.isEmpty()) {
+            setRouteIndex(stack, 0);
+        } else if (currentIndex > index) {
+            setRouteIndex(stack, currentIndex - 1);
+        } else {
+            setRouteIndex(stack, Math.min(currentIndex, waypoints.size() - 1));
+        }
+        return true;
     }
 
     public static boolean removeWaypointAt(final ItemStack stack, final RouteWaypoint waypoint) {

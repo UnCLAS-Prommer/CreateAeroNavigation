@@ -91,7 +91,22 @@ public class VorDmeBeaconScreen extends AbstractContainerScreen<VorDmeBeaconMenu
             this.saveAndClose();
             return true;
         }
+        if (keyCode == InputConstants.KEY_ESCAPE) {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (this.nameEdit != null && this.nameEdit.isFocused()) {
+            this.nameEdit.keyPressed(keyCode, scanCode, modifiers);
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(final char codePoint, final int modifiers) {
+        if (this.nameEdit != null && this.nameEdit.isFocused()) {
+            return this.nameEdit.charTyped(codePoint, modifiers);
+        }
+        return super.charTyped(codePoint, modifiers);
     }
 
     private void saveAndClose() {

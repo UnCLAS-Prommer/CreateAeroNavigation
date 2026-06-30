@@ -3,6 +3,7 @@ package com.unclasprommer.aeronavigation;
 import com.unclasprommer.aeronavigation.client.ModKeyMappings;
 import com.unclasprommer.aeronavigation.client.RouteCardScrollHandler;
 import com.unclasprommer.aeronavigation.screen.ModMenuTypes;
+import com.unclasprommer.aeronavigation.screen.RouteCardScreen;
 import com.unclasprommer.aeronavigation.screen.VorDmeBeaconScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -52,5 +53,6 @@ public class CreateAeronauticsNavigationClient {
 
     static void registerMenuScreens(final RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.VORDME_BEACON.get(), VorDmeBeaconScreen::new);
+        event.register(ModMenuTypes.ROUTE_CARD.get(), RouteCardScreen::new);
     }
 }

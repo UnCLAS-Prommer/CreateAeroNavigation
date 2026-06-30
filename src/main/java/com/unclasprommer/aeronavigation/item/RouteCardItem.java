@@ -3,9 +3,12 @@ package com.unclasprommer.aeronavigation.item;
 import com.unclasprommer.aeronavigation.block.entity.VorDmeBeaconBlockEntity;
 import com.unclasprommer.aeronavigation.navigation.RouteData;
 import com.unclasprommer.aeronavigation.navigation.RouteWaypoint;
+import com.unclasprommer.aeronavigation.screen.RouteCardMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,21 +27,6 @@ public class RouteCardItem extends Item {
 
     public RouteCardItem(final Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public InteractionResult useOn(final UseOnContext context) {
-        final Level level = context.getLevel();
-        final BlockEntity blockEntity = level.getBlockEntity(context.getClickedPos());
-        if (!(blockEntity instanceof final VorDmeBeaconBlockEntity beacon)) {
-            return super.useOn(context);
-        }
-
-        final Player player = context.getPlayer();
-        final ItemStack stack = context.getItemInHand();
-        recordBeacon(stack, level, player, beacon);
-
-        return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
     }
 
     public static void recordBeacon(final ItemStack stack, final Level level, final Player player, final VorDmeBeaconBlockEntity beacon) {
@@ -75,14 +63,48 @@ public class RouteCardItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level level, final Player player, final InteractionHand usedHand) {
         final ItemStack stack = player.getItemInHand(usedHand);
-        if (player.isShiftKeyDown() && !RouteData.getWaypoints(stack).isEmpty()) {
-            if (!level.isClientSide) {
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && !RouteData.getWaypoints(stack).isEmpty()) {
                 RouteData.clear(stack);
                 player.displayClientMessage(Component.translatable("item.create_aeronautics_navigation.route_card.clear"), true);
             }
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }
-        return super.use(level, player, usedHand);
+
+        openRouteCardMenu(level, player, usedHand, stack);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    private static void openRouteCardMenu(final Level level, final Player player, final InteractionHand hand, final ItemStack stack) {
+        if (level.isClientSide || !(player instanceof final ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        serverPlayer.openMenu(new SimpleMenuProvider(
+                        (containerId, inventory, menuPlayer) -> RouteCardMenu.create(containerId, inventory, hand, stack),
+                        Component.translatable("screen.create_aeronautics_navigation.route_card")
+                ),
+                buffer -> RouteCardMenu.writeMenuData(buffer, hand, stack));
+    }
+
+    @Override
+    public InteractionResult useOn(final UseOnContext context) {
+        final Level level = context.getLevel();
+        final BlockEntity blockEntity = level.getBlockEntity(context.getClickedPos());
+        if (blockEntity instanceof final VorDmeBeaconBlockEntity beacon) {
+            final Player player = context.getPlayer();
+            final ItemStack stack = context.getItemInHand();
+            recordBeacon(stack, level, player, beacon);
+
+            return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+        }
+
+        final Player player = context.getPlayer();
+        if (player != null && !player.isShiftKeyDown()) {
+            openRouteCardMenu(level, player, context.getHand(), context.getItemInHand());
+            return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+        }
+        return super.useOn(context);
     }
 
     @Override
