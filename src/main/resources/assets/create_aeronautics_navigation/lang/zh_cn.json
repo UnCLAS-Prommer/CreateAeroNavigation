@@ -8,6 +8,18 @@
   "create_aeronautics_navigation.configuration.magicNumber": "Magic Number",
 
   "itemGoup.navigation_tab": "航空学导航",
+  "itemGroup.create_aeronautics_navigation.navigation_tab": "机械动力：航空导航学",
   "block.create_aeronautics_navigation.vor_beacon": "VOR 导航台",
-  "block.create_aeronautics_navigation.dme_beacon": "DME 导航台"
+  "block.create_aeronautics_navigation.dme_beacon": "DME 导航台",
+  "block.create_aeronautics_navigation.vordme_beacon": "VOR/DME 导航台",
+  "block.create_aeronautics_navigation.vordme_beacon.status": "%s 位于 [%s, %s, %s]",
+  "item.create_aeronautics_navigation.route_card": "导航航路卡",
+  "item.create_aeronautics_navigation.route_card.empty": "没有航点",
+  "item.create_aeronautics_navigation.route_card.progress": "当前航点 %s/%s",
+  "item.create_aeronautics_navigation.route_card.waypoint": "#%s %s (%s, %s, %s)",
+  "item.create_aeronautics_navigation.route_card.more": "另有 %s 个航点",
+  "item.create_aeronautics_navigation.route_card.add": "已将 %s 添加为第 %s 个航点",
+  "item.create_aeronautics_navigation.route_card.remove": "已移除 %s",
+  "item.create_aeronautics_navigation.route_card.remove_missing": "%s 不在当前航路中",
+  "item.create_aeronautics_navigation.route_card.clear": "航路已清空"
 }

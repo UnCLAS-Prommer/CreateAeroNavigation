@@ -17,13 +17,15 @@ public class ModCreativeModeTabs {
     public static final Supplier<CreativeModeTab> NAVIGATION_TAB =
             CREATIVE_MODE_TABS.register("navigation_tab", () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(ModBlocks.VOR_BEACON.get()))
-                    .title(Component.translatable("itemGoup.navigation_tab"))
+                    .title(Component.translatable("itemGroup.create_aeronautics_navigation.navigation_tab"))
                     .displayItems((parameters, output) -> {
-                        output.accept(ModBlocks.VOR_BEACON); // VOR导航台
-                        output.accept(ModBlocks.DME_BEACON); // DME测距台
+                        output.accept(ModBlocks.VORDME_BEACON);
+                        output.accept(ModItems.ROUTE_CARD.get());
+                        output.accept(ModBlocks.VOR_BEACON);
+                        output.accept(ModBlocks.DME_BEACON);
                     }).build());
 
-    public static void register(IEventBus eventBus){
+    public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TABS.register(eventBus);
     }
 }

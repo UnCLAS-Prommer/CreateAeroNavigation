@@ -23,17 +23,23 @@ public class ModBlocks {
     public static final DeferredBlock<Block> DME_BEACON =
             registerBlocks("dme_beacon", () -> new Block(BlockBehaviour.Properties.of()
                     .strength(2.0F, 3.0F)));
+    public static final DeferredBlock<VorDmeBeaconBlock> VORDME_BEACON =
+            registerBlocks("vordme_beacon", () -> new VorDmeBeaconBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F)
+                    .noOcclusion()));
 
     // 自动注册
-    private static <T extends Block> void registerBlockItems(String name, DeferredBlock<T> block){
+    private static <T extends Block> void registerBlockItems(String name, DeferredBlock<T> block) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
-    private static <T extends Block> DeferredBlock<T> registerBlocks(String name, Supplier<T> block){
+
+    private static <T extends Block> DeferredBlock<T> registerBlocks(String name, Supplier<T> block) {
         DeferredBlock<T> blocks = BLOCKS.register(name, block);
         registerBlockItems(name, blocks);
         return blocks;
     }
-    public static void register(IEventBus eventBus){
+
+    public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }
 }

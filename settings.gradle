@@ -1,9 +1,20 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        mavenCentral()
+        maven {
+            url = 'https://maven.neoforged.net/releases'
+        }
     }
 }
 
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+def simulatedProject = file('../Simulated-Project')
+if (simulatedProject.exists()) {
+    includeBuild(simulatedProject) {
+        name = 'Simulated-Project'
+    }
 }

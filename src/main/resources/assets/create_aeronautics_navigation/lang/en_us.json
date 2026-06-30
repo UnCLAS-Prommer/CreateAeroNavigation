@@ -8,6 +8,18 @@
   "create_aeronautics_navigation.configuration.magicNumber": "Magic Number",
 
   "itemGoup.navigation_tab": "Aeronautics Navigation",
+  "itemGroup.create_aeronautics_navigation.navigation_tab": "Create: Aeronautics Navigation",
   "block.create_aeronautics_navigation.vor_beacon": "VOR Beacon",
-  "block.create_aeronautics_navigation.dme_beacon": "DME Beacon"
+  "block.create_aeronautics_navigation.dme_beacon": "DME Beacon",
+  "block.create_aeronautics_navigation.vordme_beacon": "VOR/DME Beacon",
+  "block.create_aeronautics_navigation.vordme_beacon.status": "%s at [%s, %s, %s]",
+  "item.create_aeronautics_navigation.route_card": "Navigation Route Card",
+  "item.create_aeronautics_navigation.route_card.empty": "No waypoints",
+  "item.create_aeronautics_navigation.route_card.progress": "Waypoint %s/%s",
+  "item.create_aeronautics_navigation.route_card.waypoint": "#%s %s (%s, %s, %s)",
+  "item.create_aeronautics_navigation.route_card.more": "+%s more",
+  "item.create_aeronautics_navigation.route_card.add": "Added %s as waypoint %s",
+  "item.create_aeronautics_navigation.route_card.remove": "Removed %s",
+  "item.create_aeronautics_navigation.route_card.remove_missing": "%s is not on this route",
+  "item.create_aeronautics_navigation.route_card.clear": "Route cleared"
 }

@@ -1,5 +1,9 @@
 package com.unclasprommer.aeronavigation;
 
+import com.unclasprommer.aeronavigation.block.entity.ModBlockEntityTypes;
+import com.unclasprommer.aeronavigation.component.ModDataComponents;
+import com.unclasprommer.aeronavigation.navigation.ModNavigationTargets;
+import dev.simulated_team.simulated.index.SimDataComponents;
 import com.unclasprommer.aeronavigation.block.ModBlocks;
 import com.unclasprommer.aeronavigation.item.ModCreativeModeTabs;
 import com.unclasprommer.aeronavigation.item.ModItems;
@@ -17,7 +21,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import java.util.List;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(CreateAeronauticsNavigation.MOD_ID)
@@ -36,7 +43,11 @@ public class CreateAeronauticsNavigation {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntityTypes.register(modEventBus);
+        ModDataComponents.register(modEventBus);
+        ModNavigationTargets.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        modEventBus.addListener(this::modifyDefaultComponents);
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (CreateAeronauticsNavigation) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
@@ -64,6 +75,13 @@ public class CreateAeronauticsNavigation {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
+    }
+
+    private void modifyDefaultComponents(final ModifyDefaultComponentsEvent event) {
+        event.modify(ModItems.ROUTE_CARD.get(), builder -> builder
+                .set(SimDataComponents.TARGET, ModNavigationTargets.ROUTE_CARD.get())
+                .set(ModDataComponents.ROUTE_WAYPOINTS.get(), List.of())
+                .set(ModDataComponents.ROUTE_INDEX.get(), 0));
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

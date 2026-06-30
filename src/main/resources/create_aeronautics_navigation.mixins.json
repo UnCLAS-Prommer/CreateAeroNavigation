@@ -2,7 +2,10 @@
   "required": true,
   "package": "com.unclasprommer.aeronavigation.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "NavTableBlockEntityMixin",
+    "NavTableBlockMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
