@@ -17,6 +17,7 @@ public record EditRouteCardPacket(InteractionHand hand, int action, int index, i
     private static final int ACTION_MOVE = 0;
     private static final int ACTION_REMOVE = 1;
     private static final int ACTION_ADD = 2;
+    private static final int ACTION_SET_TARGET = 3;
 
     public static final Type<EditRouteCardPacket> TYPE = new Type<>(CreateAeronauticsNavigation.path("edit_route_card"));
 
@@ -35,7 +36,7 @@ public record EditRouteCardPacket(InteractionHand hand, int action, int index, i
     );
 
     private EditRouteCardPacket(final int handIndex, final int action, final int index, final int delta, final BlockPos pos) {
-        this(InteractionHand.values()[Math.clamp(handIndex, 0, InteractionHand.values().length - 1)], Math.clamp(action, ACTION_MOVE, ACTION_ADD), index, Math.clamp(delta, -1, 1), pos);
+        this(InteractionHand.values()[Math.clamp(handIndex, 0, InteractionHand.values().length - 1)], Math.clamp(action, ACTION_MOVE, ACTION_SET_TARGET), index, Math.clamp(delta, -1, 1), pos);
     }
 
     public static EditRouteCardPacket move(final InteractionHand hand, final int index, final int delta) {
@@ -48,6 +49,10 @@ public record EditRouteCardPacket(InteractionHand hand, int action, int index, i
 
     public static EditRouteCardPacket add(final InteractionHand hand, final BlockPos pos) {
         return new EditRouteCardPacket(hand, ACTION_ADD, 0, 0, pos);
+    }
+
+    public static EditRouteCardPacket setTarget(final InteractionHand hand, final int index) {
+        return new EditRouteCardPacket(hand, ACTION_SET_TARGET, index, 0, BlockPos.ZERO);
     }
 
     public static void handle(final EditRouteCardPacket packet, final IPayloadContext context) {
@@ -65,6 +70,14 @@ public record EditRouteCardPacket(InteractionHand hand, int action, int index, i
             case ACTION_REMOVE -> RouteData.removeWaypointAtIndex(stack, packet.index());
             case ACTION_ADD -> {
                 RouteData.addCoordinateWaypoint(stack, player.level(), packet.pos());
+                yield true;
+            }
+            case ACTION_SET_TARGET -> {
+                final int waypointCount = RouteData.getWaypoints(stack).size();
+                if (packet.index() < 0 || packet.index() >= waypointCount) {
+                    yield false;
+                }
+                RouteData.setRouteIndex(stack, packet.index());
                 yield true;
             }
             default -> false;

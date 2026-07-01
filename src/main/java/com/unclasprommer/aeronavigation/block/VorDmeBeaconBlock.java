@@ -7,6 +7,7 @@ import com.unclasprommer.aeronavigation.item.RouteCardItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -42,6 +43,16 @@ public class VorDmeBeaconBlock extends BaseEntityBlock {
     @Override
     protected RenderShape getRenderShape(final BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    protected float getShadeBrightness(final BlockState state, final BlockGetter level, final BlockPos pos) {
+        return 1.0F;
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(final BlockState state, final BlockGetter level, final BlockPos pos) {
+        return true;
     }
 
     @Override

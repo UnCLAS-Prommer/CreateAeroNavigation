@@ -39,7 +39,7 @@ public class RouteCardScreen extends AbstractContainerScreen<RouteCardMenu> {
 
     public RouteCardScreen(final RouteCardMenu menu, final Inventory playerInventory, final Component title) {
         super(menu, playerInventory, title);
-        this.imageWidth = 380;
+        this.imageWidth = 410;
         this.imageHeight = 228;
         this.waypoints = new ArrayList<>(menu.getWaypoints());
         this.routeIndex = menu.getRouteIndex();
@@ -66,20 +66,26 @@ public class RouteCardScreen extends AbstractContainerScreen<RouteCardMenu> {
         for (int row = 0; row < visibleRows; row++) {
             final int index = this.scrollOffset + row;
             final int y = rowStartY + row * ROW_HEIGHT;
+            final Button target = Button.builder(Component.translatable("screen.create_aeronautics_navigation.route_card.target"), button -> this.setTargetWaypoint(index))
+                    .bounds(this.leftPos + 214, y, 50, 18)
+                    .build();
+            target.active = index != this.routeIndex;
+            this.addRenderableWidget(target);
+
             final Button up = Button.builder(Component.translatable("screen.create_aeronautics_navigation.route_card.move_up"), button -> this.moveWaypoint(index, -1))
-                    .bounds(this.leftPos + 244, y, 38, 18)
+                    .bounds(this.leftPos + 268, y, 36, 18)
                     .build();
             up.active = index > 0;
             this.addRenderableWidget(up);
 
             final Button down = Button.builder(Component.translatable("screen.create_aeronautics_navigation.route_card.move_down"), button -> this.moveWaypoint(index, 1))
-                    .bounds(this.leftPos + 286, y, 38, 18)
+                    .bounds(this.leftPos + 308, y, 42, 18)
                     .build();
             down.active = index < this.waypoints.size() - 1;
             this.addRenderableWidget(down);
 
             this.addRenderableWidget(Button.builder(Component.translatable("screen.create_aeronautics_navigation.route_card.delete"), button -> this.removeWaypoint(index))
-                    .bounds(this.leftPos + 328, y, 40, 18)
+                    .bounds(this.leftPos + 354, y, 44, 18)
                     .build());
         }
 
@@ -107,7 +113,7 @@ public class RouteCardScreen extends AbstractContainerScreen<RouteCardMenu> {
         this.addRenderableWidget(next);
 
         this.addRenderableWidget(Button.builder(Component.translatable("screen.create_aeronautics_navigation.route_card.close"), button -> this.closeScreen())
-                .bounds(this.leftPos + 276, bottomY, 92, 20)
+                .bounds(this.leftPos + this.imageWidth - 104, bottomY, 92, 20)
                 .build());
     }
 
@@ -186,6 +192,16 @@ public class RouteCardScreen extends AbstractContainerScreen<RouteCardMenu> {
         }
         this.scrollOffset = Math.clamp(this.scrollOffset, 0, this.maxScrollOffset());
         PacketDistributor.sendToServer(EditRouteCardPacket.remove(this.menu.getHand(), index));
+        this.rebuildRouteCardWidgets();
+    }
+
+    private void setTargetWaypoint(final int index) {
+        if (index < 0 || index >= this.waypoints.size() || index == this.routeIndex) {
+            return;
+        }
+
+        this.routeIndex = index;
+        PacketDistributor.sendToServer(EditRouteCardPacket.setTarget(this.menu.getHand(), index));
         this.rebuildRouteCardWidgets();
     }
 
@@ -317,7 +333,7 @@ public class RouteCardScreen extends AbstractContainerScreen<RouteCardMenu> {
             final String prefix = index == this.routeIndex ? "> " : "  ";
             final String text = prefix + "#" + (index + 1) + " " + waypoint.name() + " (" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")";
             final int color = index == this.routeIndex ? ACTIVE_COLOR : LABEL_COLOR;
-            graphics.drawString(this.font, this.font.plainSubstrByWidth(text, 222), 12, 43 + row * ROW_HEIGHT, color, false);
+            graphics.drawString(this.font, this.font.plainSubstrByWidth(text, 198), 12, 43 + row * ROW_HEIGHT, color, false);
         }
     }
 
